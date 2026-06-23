@@ -139,7 +139,7 @@
 <body>
 
     <div class="container">
-        <h1>Project Brazil 2026 ✈️</h1>
+        <h1>Project Brazil 2027 ✈️</h1>
         <div class="meta-text">Meta Total: <span id="meta-valor">$3000</span></div>
 
         <div class="monto-actual" id="monto-actual">$0.00</div>
@@ -165,9 +165,9 @@
 
     <script>
         // 1. CONFIGURACIÓN GENERAL
-        const META = 3000; // <- Cambia aquí tu meta numérica si lo deseas
+        const META = 3000; 
 
-        // 2. CREDENCIALES DE SUPABASE (Reemplaza con tus datos reales)
+        // 2. CREDENCIALES DE SUPABASE
         const SUPABASE_URL = "https://hmvhjolgoyxwkeywpead.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_XJbyYZeO4egjxCPPcdF_Bg_Tmm3QcKf";
 
@@ -183,7 +183,6 @@
 
         // Función para consultar datos de Supabase y pintar la interfaz
         async function cargarDatos() {
-            // A. Traer todos los registros de la tabla 'ahorros' ordenados por fecha reciente
             const { data: ahorros, error } = await supabase
                 .from('ahorros')
                 .select('*')
@@ -194,17 +193,14 @@
                 return;
             }
 
-            // B. Calcular la suma total acumulada
             const totalAhorrado = ahorros.reduce((suma, item) => suma + item.monto, 0);
 
-            // C. Actualizar interfaz visual de la barra
             montoActualEl.textContent = `$${totalAhorrado.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
             let porcentaje = (totalAhorrado / META) * 100;
             if (porcentaje > 100) porcentaje = 100;
             progressBarEl.style.width = `${porcentaje}%`;
             porcentajeTextoEl.textContent = `${porcentaje.toFixed(1)}% alcanzado`;
 
-            // D. Pintar la lista de historial
             listaAhorrosEl.innerHTML = '';
             ahorros.forEach(item => {
                 const div = document.createElement('div');
@@ -214,14 +210,13 @@
             });
         }
 
-        // Evento al enviar formulario (Agregar nuevo ahorro)
+        // Evento al enviar formulario
         formularioEl.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const nombre = document.getElementById('nombre').value;
             const monto = parseFloat(document.getElementById('monto').value);
 
-            // Insertar datos en la tabla 'ahorros' de Supabase
             const { error } = await supabase
                 .from('ahorros')
                 .insert([{ nombre: nombre, monto: monto }]);
@@ -229,12 +224,11 @@
             if (error) {
                 alert("Error al guardar el ahorro: " + error.message);
             } else {
-                document.getElementById('monto').value = ''; // Limpiar campo monto
-                cargarDatos(); // Recargar la app para ver el cambio reflejado
+                document.getElementById('monto').value = ''; 
+                cargarDatos(); 
             }
         });
 
-        // Cargar datos por primera vez al abrir la app
         document.getElementById('meta-valor').textContent = `$${META}`;
         cargarDatos();
     </script>
