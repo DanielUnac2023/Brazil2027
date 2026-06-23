@@ -1,3 +1,3 @@
 Brasil2026-Supabase: DWNVctyNmPEcFhnn
 SUPABASE_Key = sb_publishable_XJbyYZeO4egjxCPPcdF_Bg_Tmm3QcKf
-SUPABASE_URL = https://hmvhjolgoyxwkeywpead.supabase.co/rest/v1/
+SUPABASE_URL = https://hmvhjolgoyxwkeywpead.supabase.co

@@ -172,7 +172,7 @@
         const SUPABASE_KEY = "sb_publishable_XJbyYZeO4egjxCPPcdF_Bg_Tmm3QcKf";
 
         // Inicializar cliente Supabase
-        const supabaseClient  = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient  = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Elementos del DOM
         const montoActualEl = document.getElementById('monto-actual');
