@@ -172,7 +172,7 @@
         const SUPABASE_KEY = "sb_publishable_XJbyYZeO4egjxCPPcdF_Bg_Tmm3QcKf";
 
         // Inicializar cliente Supabase
-        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient  = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Elementos del DOM
         const montoActualEl = document.getElementById('monto-actual');
@@ -183,7 +183,7 @@
 
         // Función para consultar datos de Supabase y pintar la interfaz
         async function cargarDatos() {
-            const { data: ahorros, error } = await supabase
+            const { data: ahorros, error } = await supabaseClient
                 .from('ahorros')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -217,7 +217,7 @@
             const nombre = document.getElementById('nombre').value;
             const monto = parseFloat(document.getElementById('monto').value);
 
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('ahorros')
                 .insert([{ nombre: nombre, monto: monto }]);
 
