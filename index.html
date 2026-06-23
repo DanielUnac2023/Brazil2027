@@ -9,11 +9,11 @@
         :root {
             --primary: #2ecc71;
             --danger: #e74c3c;
+            --warning: #f1c40f;
             --background: #111827;
             --card: #1f2937;
             --text: #f3f4f6;
             --muted: #9ca3af;
-            --nav-bg: #1f2937;
         }
 
         body {
@@ -39,7 +39,6 @@
 
         h1 { margin: 0 0 15px 0; font-size: 26px; text-align: center; color: #fff; }
 
-        /* Navegación por pestañas */
         .nav-tabs {
             display: flex;
             background-color: var(--background);
@@ -68,16 +67,45 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        /* Secciones de vista */
         .view-section { display: none; }
         .view-section.active { display: block; }
 
-        /* Estilos de metas y barras */
         .meta-box { text-align: center; margin-bottom: 25px; }
         .meta-box h2 { margin: 0; font-size: 16px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
         
         .monto-grande { font-size: 42px; font-weight: 800; color: var(--primary); margin: 5px 0 12px 0; }
-        .monto-pequeno { font-size: 20px; font-weight: 700; color: var(--primary); }
+        .monto-pequeno { font-size: 16px; font-weight: 700; color: var(--primary); }
+
+        /* Ajuste de Meta Configurable */
+        .config-meta-inline {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: -5px;
+            margin-bottom: 20px;
+        }
+        .config-meta-inline input {
+            width: 130px;
+            padding: 6px 8px;
+            font-size: 13px;
+            text-align: center;
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: #fff;
+        }
+        .config-meta-inline button {
+            background: #374151;
+            color: #fff;
+            border: none;
+            padding: 7px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .config-meta-inline button:hover { background: #4b5563; }
 
         .progress-container {
             background-color: #374151;
@@ -98,7 +126,6 @@
 
         .porcentaje { font-size: 14px; font-weight: 600; color: #e5e7eb; margin-bottom: 20px; text-align: center; }
 
-        /* Grid de metas individuales */
         .individual-grid {
             border-top: 1px solid #374151;
             padding-top: 20px;
@@ -116,12 +143,10 @@
 
         .user-info { display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
         .user-info .user-name { color: #fff; }
-        
         .user-row .progress-container { height: 10px; margin-bottom: 4px; }
 
-        /* Formularios y Elementos de Aporte */
-        form { display: flex; flex-direction: column; gap: 15px; background: #111827; padding: 20px; border-radius: 12px; margin-bottom: 25px; }
-        .input-group { display: flex; flex-direction: column; gap: 12px; }
+        form { display: flex; flex-direction: column; gap: 12px; background: #111827; padding: 20px; border-radius: 12px; margin-bottom: 25px; }
+        .input-group { display: flex; flex-direction: column; gap: 10px; }
         
         input, select {
             background-color: #1f2937;
@@ -150,10 +175,12 @@
             transition: all 0.2s;
         }
         button.btn-submit:hover { background-color: #27ae60; transform: translateY(-1px); }
+        
+        form.edit-mode { border: 2px solid var(--warning); }
+        form.edit-mode button.btn-submit { background-color: var(--warning); color: #000; }
 
-        /* Historial */
         .historial h3 { margin: 0 0 12px 0; font-size: 15px; color: var(--muted); text-align: left; }
-        .historial-list { max-height: 180px; overflow-y: auto; padding-right: 5px; text-align: left; }
+        .historial-list { max-height: 240px; overflow-y: auto; padding-right: 5px; text-align: left; }
         
         .historial-item {
             display: flex;
@@ -167,9 +194,20 @@
         }
         .historial-item .user { font-weight: bold; color: #fff; }
         .historial-item .date { font-size: 11px; color: var(--muted); display: block; }
-        .historial-item .val { color: var(--primary); font-weight: bold; }
+        .historial-item .right-side { display: flex; align-items: center; gap: 12px; }
+        .historial-item .val { color: var(--primary); font-weight: bold; margin-right: 4px; }
+        
+        .btn-action {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .btn-action:hover { background-color: rgba(255,255,255,0.1); }
 
-        /* Alertas Flotantes */
         .toast {
             position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px;
             color: white; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
@@ -196,11 +234,15 @@
                 <div class="progress-container">
                     <div class="progress-bar" id="global-bar"></div>
                 </div>
-                <div class="porcentaje" id="global-txt-porcentaje">0% de $12.000</div>
+                <div class="porcentaje" id="global-txt-porcentaje">0% de $0</div>
             </div>
 
             <div class="individual-grid">
-                <h3 style="margin: 0; font-size: 15px; color: var(--muted);">Metas Individuales ($3.000 c/u)</h3>
+                <div class="config-meta-inline">
+                    <label style="font-size:13px;">Meta Individual ($):</label>
+                    <input type="number" id="input-meta-config" min="1">
+                    <button onclick="guardarNuevaMeta()">Sincronizar</button>
+                </div>
                 
                 <div class="user-row">
                     <div class="user-info">
@@ -238,6 +280,7 @@
 
         <div id="section-aportar" class="view-section">
             <form id="ahorro-form">
+                <h3 id="form-title" style="margin:0; font-size:15px; color:var(--primary);">Registrar Nuevo Ahorro</h3>
                 <div class="input-group">
                     <label for="nombre">¿Quién aporta?</label>
                     <select id="nombre" required>
@@ -249,25 +292,25 @@
                     </select>
 
                     <label for="monto">Monto del Ahorro ($)</label>
-                    <input type="number" id="monto" placeholder="Ej: 150" required min="0.01" step="0.01">
+                    <input type="number" id="monto" placeholder="Ej: 150000" required min="0.01" step="0.01">
                 </div>
-                <button type="submit" class="btn-submit">Registrar Ahorro</button>
+                <button type="submit" class="btn-submit" id="btn-submit-text">Registrar Ahorro</button>
+                <button type="button" id="btn-cancel-edit" style="display:none; background:#374151; color:white; border:none; padding:8px; border-radius:8px; cursor:pointer;" onclick="cancelarEdicion()">Cancelar Edición</button>
             </form>
 
             <div class="historial">
-                <h3>Historial Reciente</h3>
+                <h3>Historial Completo</h3>
                 <div class="historial-list" id="lista-ahorros"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // 1. CONFIGURACIÓN DE METAS
-        const META_INDIVIDUAL = 6000000; 
+        // Configuración Base de Integrantes
         const INTEGRANTES = ["Daniel", "Santiago", "Jaime", "Adry"];
-        const META_GLOBAL = META_INDIVIDUAL * INTEGRANTES.length; // $12,000 automáticamente
+        let META_INDIVIDUAL = 6000000; // Valor de respaldo por defecto
 
-        // 2. CREDENCIALES DE SUPABASE
+        // CONFIGURACIÓN SUPABASE
         const SUPABASE_URL = "https://hmvhjolgoyxwkeywpead.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_XJbyYZeO4egjxCPPcdF_Bg_Tmm3QcKf";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -276,8 +319,10 @@
         const toastEl = document.getElementById('toast-alert');
         const formularioEl = document.getElementById('ahorro-form');
         const listaAhorrosEl = document.getElementById('lista-ahorros');
+        const inputMetaConfig = document.getElementById('input-meta-config');
+        
+        let editandoID = null;
 
-        // Control de Pestañas de Navegación
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
@@ -291,7 +336,6 @@
             }
         }
 
-        // Mostrar Notificaciones
         function showNotification(message, type = 'success') {
             toastEl.textContent = message;
             toastEl.style.backgroundColor = type === 'success' ? 'var(--primary)' : 'var(--danger)';
@@ -299,48 +343,82 @@
             setTimeout(() => { toastEl.style.display = 'none'; }, 3000);
         }
 
-        // Cargar datos desde Supabase y procesar cálculos complejos
+        // GUARDAR META EN SUPABASE (Para que cambie en todos los dispositivos)
+        async function guardarNuevaMeta() {
+            const nuevaMeta = parseFloat(inputMetaConfig.value);
+            if (!nuevaMeta || nuevaMeta <= 0) {
+                showNotification("Ingresa una cantidad de meta válida", "error");
+                return;
+            }
+
+            const { error } = await supabaseClient
+                .from('configuracion')
+                .upsert({ id: 'meta_app', valor_meta: nuevaMeta });
+
+            if (error) {
+                showNotification("Error al guardar la meta en la nube", "error");
+                console.error(error);
+            } else {
+                showNotification("¡Meta global sincronizada en la nube!");
+                await cargarDatos();
+            }
+        }
+
+        // CARGAR DATOS COMPLETOS (Lee la meta y los ahorros desde la nube)
         async function cargarDatos() {
-            const { data: ahorros, error } = await supabaseClient
+            // 1. Traer la meta actual de Supabase
+            const { data: configData, error: configError } = await supabaseClient
+                .from('configuracion')
+                .select('valor_meta')
+                .eq('id', 'meta_app')
+                .single();
+
+            if (!configError && configData) {
+                META_INDIVIDUAL = configData.valor_meta;
+                inputMetaConfig.value = META_INDIVIDUAL;
+            }
+            
+            let META_GLOBAL = META_INDIVIDUAL * INTEGRANTES.length;
+
+            // 2. Traer los ahorros acumulados
+            const { data: ahorros, error: ahorrosError } = await supabaseClient
                 .from('ahorros')
                 .select('*')
                 .order('created_at', { ascending: false });
 
-            if (error) {
+            if (ahorrosError) {
                 showNotification("Error al actualizar datos", "error");
                 return;
             }
 
-            // Diccionario para acumular lo de cada persona
             let acumuladoPorPersona = { Daniel: 0, Santiago: 0, Jaime: 0, Adry: 0 };
             let totalGlobal = 0;
 
             ahorros.forEach(item => {
-                // Sumar solo si pertenece a uno de los 4 integrantes válidos
                 if (acumuladoPorPersona.hasOwnProperty(item.nombre)) {
                     acumuladoPorPersona[item.nombre] += item.monto;
                     totalGlobal += item.monto;
                 }
             });
 
-            // --- 1. RENDERIZAR MÓDULO GLOBAL ---
+            // Renderizar Interfaz Global
             document.getElementById('global-actual').textContent = `$${totalGlobal.toLocaleString('es-ES', { minimumFractionDigits: 0 })}`;
             let porcGlobal = (totalGlobal / META_GLOBAL) * 100;
             if (porcGlobal > 100) porcGlobal = 100;
             document.getElementById('global-bar').style.width = `${porcGlobal}%`;
-            document.getElementById('global-txt-porcentaje').textContent = `${porcGlobal.toFixed(1)}% de $${META_GLOBAL.toLocaleString('es-ES')}`;
+            document.getElementById('global-txt-porcentaje').textContent = `${porcGlobal.toFixed(1)}% de $${META_GLOBAL.toLocaleString('es-ES', { maximumFractionDigits: 0 })}`;
 
-            // --- 2. RENDERIZAR MÓDULOS INDIVIDUALES ---
+            // Renderizar Interfaz Individual
             INTEGRANTES.forEach(nombre => {
                 const totalUser = acumuladoPorPersona[nombre];
-                document.getElementById(`monto-${nombre}`).textContent = `$${totalUser.toLocaleString('es-ES', { minimumFractionDigits: 0 })} / $${META_INDIVIDUAL.toLocaleString('es-ES')}`;
+                document.getElementById(`monto-${nombre}`).textContent = `$${totalUser.toLocaleString('es-ES', { minimumFractionDigits: 0 })} / $${META_INDIVIDUAL.toLocaleString('es-ES', { maximumFractionDigits: 0 })}`;
                 
                 let porcUser = (totalUser / META_INDIVIDUAL) * 100;
                 if (porcUser > 100) porcUser = 100;
                 document.getElementById(`bar-${nombre}`).style.width = `${porcUser}%`;
             });
 
-            // --- 3. RENDERIZAR HISTORIAL SIMPLIFICADO ---
+            // Pintar Historial Completo
             listaAhorrosEl.innerHTML = '';
             if(ahorros.length === 0) {
                 listaAhorrosEl.innerHTML = '<div style="color: var(--muted); text-align:center; padding-top:10px;">No hay aportes aún</div>';
@@ -356,13 +434,17 @@
                         <span class="user">${item.nombre}</span>
                         <span class="date">${fecha}</span>
                     </div>
-                    <span class="val">+$${item.monto}</span>
+                    <div class="right-side">
+                        <span class="val">+$${item.monto.toLocaleString('es-ES')}</span>
+                        <button class="btn-action" onclick="activarEdicion('${item.id}', '${item.nombre}', ${item.monto})" title="Editar aporte">✏️</button>
+                        <button class="btn-action" onclick="eliminarAhorro('${item.id}')" title="Eliminar aporte">🗑️</button>
+                    </div>
                 `;
                 listaAhorrosEl.appendChild(div);
             });
         }
 
-        // Formulario de Envío
+        // Procesar Envíos y Ediciones del Formulario
         formularioEl.addEventListener('submit', async (e) => {
             e.preventDefault();
             const nombreSelect = document.getElementById('nombre');
@@ -371,22 +453,85 @@
             const nombre = nombreSelect.value;
             const monto = parseFloat(montoInput.value);
 
-            const { error } = await supabaseClient
-                .from('ahorros')
-                .insert([{ nombre: nombre, monto: monto }]);
+            if (editandoID) {
+                const { error } = await supabaseClient
+                    .from('ahorros')
+                    .update({ nombre: nombre, monto: monto })
+                    .eq('id', editandoID);
 
-            if (error) {
-                showNotification("Error al guardar el aporte", "error");
+                if (error) {
+                    showNotification("Error al modificar el aporte", "error");
+                } else {
+                    showNotification("¡Aporte modificado con éxito!");
+                    cancelarEdicion();
+                    await cargarDatos();
+                    switchTab('progreso');
+                }
             } else {
-                montoInput.value = '';
-                nombreSelect.selectedIndex = 0; // Resetea el dropdown
-                showNotification("¡Ahorro registrado correctamente!");
-                await cargarDatos();
-                switchTab('progreso'); // Te manda automáticamente a ver las barras actualizadas
+                const { error } = await supabaseClient
+                    .from('ahorros')
+                    .insert([{ nombre: nombre, monto: monto }]);
+
+                if (error) {
+                    showNotification("Error al guardar el aporte", "error");
+                } else {
+                    montoInput.value = '';
+                    nombreSelect.selectedIndex = 0;
+                    showNotification("¡Ahorro registrado correctamente!");
+                    await cargarDatos();
+                    switchTab('progreso');
+                }
             }
         });
 
-        // Carga inicial
+        function activarEdicion(id, nombre, monto) {
+            editandoID = id;
+            document.getElementById('nombre').value = nombre;
+            document.getElementById('monto').value = monto;
+            
+            formularioEl.classList.add('edit-mode');
+            document.getElementById('form-title').textContent = "✏️ Editando Aporte Seleccionado";
+            document.getElementById('btn-submit-text').textContent = "Guardar Cambios";
+            document.getElementById('btn-cancel-edit').style.display = "block";
+            
+            formularioEl.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cancelarEdicion() {
+            editandoID = null;
+            document.getElementById('nombre').selectedIndex = 0;
+            document.getElementById('monto').value = '';
+            
+            formularioEl.classList.remove('edit-mode');
+            document.getElementById('form-title').textContent = "Registrar Nuevo Ahorro";
+            document.getElementById('btn-submit-text').textContent = "Registrar Ahorro";
+            document.getElementById('btn-cancel-edit').style.display = "none";
+        }
+
+        async function eliminarAhorro(id) {
+            const password = prompt("Por seguridad, ingresa el código de confirmación para eliminar este registro:");
+            if (password === null) return;
+            
+            if (password !== "brazil2027") {
+                showNotification("Código incorrecto. Acción denegada.", "error");
+                return;
+            }
+
+            const { error } = await supabaseClient
+                .from('ahorros')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                showNotification("Error al intentar eliminar", "error");
+            } else {
+                showNotification("Aporte eliminado correctamente");
+                if (editandoID === id) cancelarEdicion();
+                await cargarDatos();
+            }
+        }
+
+        // Inicio Inicial
         cargarDatos();
     </script>
 </body>
